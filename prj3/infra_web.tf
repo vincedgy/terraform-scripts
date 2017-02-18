@@ -120,7 +120,6 @@ resource "aws_elb" "web-elb" {
 
   subnets         = ["${aws_subnet.default.id}"]
   security_groups = ["${aws_security_group.elb.id}"]
-  instances       = ["${aws_instance.web.id}"]
 
   listener {
     instance_port     = 80
@@ -145,20 +144,60 @@ resource "aws_elb" "web-elb" {
   }
 }
 
+resource "aws_placement_group" "test" {
+  name     = "${var.domain_name}-${var.env}"
+  strategy = "cluster"
+}
+
 resource "aws_autoscaling_group" "web-asg" {
-  availability_zones   = ["${split(",", var.availability_zones)}"]
-  name                 = "${var.domain_name}-ASG"
-  max_size             = "${var.asg_max}"
-  min_size             = "${var.asg_min}"
-  desired_capacity     = "${var.asg_desired}"
-  force_delete         = true
+  availability_zones = ["${split(",", var.availability_zones)}"]
+  name               = "${var.domain_name}-ASG"
+  max_size           = "${var.asg_max}"
+  min_size           = "${var.asg_min}"
+  desired_capacity   = "${var.asg_desired}"
+  force_delete       = true
+  placement_group    = "${aws_placement_group.test.id}"
+
   launch_configuration = "${aws_launch_configuration.web-lc.name}"
   load_balancers       = ["${aws_elb.web-elb.name}"]
+
+  /*
+  initial_lifecycle_hook {
+    name                 = "${var.domain_name}-${var.env}-Launching"
+    default_result       = "CONTINUE"
+    heartbeat_timeout    = 2000
+    lifecycle_transition = "autoscaling:EC2_INSTANCE_LAUNCHING"
+
+    notification_metadata = <<EOF
+{
+  "Message": "${var.domain_name}-${var.env}-Launching"
+}
+EOF
+
+    notification_target_arn = "arn:aws:sqs:us-east-1:444455556666:queue1*"
+    role_arn                = "arn:aws:iam::123456789012:role/S3Access"
+  }
+  */
 
   #vpc_zone_identifier = ["${split(",", var.availability_zones)}"]
   tag {
     key                 = "Name"
     value               = "${var.domain_name}-web-asg"
+    propagate_at_launch = "true"
+  }
+  tag {
+    key                 = "Env"
+    value               = "${var.env}"
+    propagate_at_launch = "true"
+  }
+  tag {
+    key                 = "Author"
+    value               = "${var.author}"
+    propagate_at_launch = "true"
+  }
+  tag {
+    key                 = "Generator"
+    value               = "${var.generator}"
     propagate_at_launch = "true"
   }
 }
@@ -188,13 +227,6 @@ resource "aws_launch_configuration" "web-lc" {
 
   # Userdata for EC2 based on the template created
   user_data = "${data.template_file.web-userdata.rendered}"
-
-  tags {
-    Name      = "${var.domain_name}-EC2"
-    Env       = "${var.env}"
-    Author    = "${var.author}"
-    Generator = "${var.generator}"
-  }
 }
 
 # KeyPair for EC2 connection
