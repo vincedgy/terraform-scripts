@@ -30,13 +30,42 @@ resource "aws_route" "internet_access" {
 }
 
 # Create a subnet to launch our instances into
-resource "aws_subnet" "default" {
+resource "aws_subnet" "first-SNT" {
   vpc_id                  = "${aws_vpc.default.id}"
   cidr_block              = "10.0.1.0/24"
+  availability_zone       = "eu-west-1a"
   map_public_ip_on_launch = true
 
   tags {
-    Name      = "${var.domain_name}-SNT"
+    Name      = "${var.domain_name}-SNT-1"
+    Env       = "${var.env}"
+    Author    = "${var.author}"
+    Generator = "${var.generator}"
+  }
+}
+
+resource "aws_subnet" "second-SNT" {
+  vpc_id                  = "${aws_vpc.default.id}"
+  cidr_block              = "10.0.2.0/24"
+  availability_zone       = "eu-west-1b"
+  map_public_ip_on_launch = true
+
+  tags {
+    Name      = "${var.domain_name}-SNT-2"
+    Env       = "${var.env}"
+    Author    = "${var.author}"
+    Generator = "${var.generator}"
+  }
+}
+
+resource "aws_subnet" "third-SNT" {
+  vpc_id                  = "${aws_vpc.default.id}"
+  cidr_block              = "10.0.3.0/24"
+  availability_zone       = "eu-west-1c"
+  map_public_ip_on_launch = true
+
+  tags {
+    Name      = "${var.domain_name}-SNT-3"
     Env       = "${var.env}"
     Author    = "${var.author}"
     Generator = "${var.generator}"
@@ -116,18 +145,16 @@ resource "aws_elb" "web-elb" {
   name = "${var.domain_name}-ELB"
 
   # The same availability zone as our instances
-  availability_zones = ["${split(",", var.availability_zones)}"]
+  # availability_zones = ["${split(",", var.availability_zones)}"]
 
-  subnets         = ["${aws_subnet.default.id}"]
+  subnets         = ["${aws_subnet.first-SNT.id}", "${aws_subnet.second-SNT.id}", "${aws_subnet.third-SNT.id}"]
   security_groups = ["${aws_security_group.elb.id}"]
-
   listener {
     instance_port     = 80
     instance_protocol = "http"
     lb_port           = 80
     lb_protocol       = "http"
   }
-
   health_check {
     healthy_threshold   = 2
     unhealthy_threshold = 2
@@ -135,7 +162,6 @@ resource "aws_elb" "web-elb" {
     target              = "HTTP:80/"
     interval            = 30
   }
-
   tags {
     Name      = "${var.domain_name}-ELB"
     Env       = "${var.env}"
@@ -144,19 +170,14 @@ resource "aws_elb" "web-elb" {
   }
 }
 
-resource "aws_placement_group" "test" {
-  name     = "${var.domain_name}-${var.env}"
-  strategy = "cluster"
-}
-
 resource "aws_autoscaling_group" "web-asg" {
-  availability_zones = ["${split(",", var.availability_zones)}"]
-  name               = "${var.domain_name}-ASG"
-  max_size           = "${var.asg_max}"
-  min_size           = "${var.asg_min}"
-  desired_capacity   = "${var.asg_desired}"
-  force_delete       = true
-  placement_group    = "${aws_placement_group.test.id}"
+  availability_zones  = ["${split(",", var.availability_zones)}"]
+  name                = "${var.domain_name}-ASG"
+  max_size            = "${var.asg_max}"
+  min_size            = "${var.asg_min}"
+  desired_capacity    = "${var.asg_desired}"
+  force_delete        = true
+  vpc_zone_identifier = ["${aws_subnet.first-SNT.id}", "${aws_subnet.second-SNT.id}", "${aws_subnet.third-SNT.id}"]
 
   launch_configuration = "${aws_launch_configuration.web-lc.name}"
   load_balancers       = ["${aws_elb.web-elb.name}"]

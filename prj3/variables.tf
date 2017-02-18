@@ -59,9 +59,10 @@ variable "key_name" {
 variable "aws_amis" {
   default = {
     eu-west-1 = "ami-70edb016"
-    eu-west-1 = "ami-0b33d91d"
+
+    /*eu-west-1 = "ami-0b33d91d"
     eu-west-1 = "ami-165a0876"
-    eu-west-2 = "ami-f173cc91"
+    eu-west-2 = "ami-f173cc91"*/
   }
 }
 
