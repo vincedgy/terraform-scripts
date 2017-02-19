@@ -1,5 +1,3 @@
-
-
 export ROLE_NAME=RunCommandRole
 
 echo "Remove all instance-profile which use role $ROLE_NAME..."
@@ -11,10 +9,6 @@ do
 done
 
 echo "Detach role $ROLE_NAME from all policies..."
-
-
 aws iam delete-role --role-name $ROLE_NAME
-echo "Done"
 
-# Apply configuration
-terraform destroy -var-file DEV.tfvars
+echo "Done"
