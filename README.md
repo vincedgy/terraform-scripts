@@ -2,7 +2,12 @@
 
 This repo stores different projects for terraform scripts that I create all along and save here
 
-note : aws cli (with appropriate credentials) and terraform needs to be installed first.
+Aws cli (with appropriate credentials) and terraform needs to be installed first.
+
+Please refere to this pages for more information :
+https://github.com/hashicorp/terraform
+https://github.com/aws/aws-cli
+
 
 ## simple ec2
 Based on terraform tutorial : launch a simple ec2
