@@ -1,6 +1,6 @@
 # My terraform scripts
 
-This repo list different projects for terraform scripts that I create all along and save here
+This repo stores different projects for terraform scripts that I create all along and save here
 
 note : aws cli (with appropriate credentials) and terraform needs to be installed first.
 
