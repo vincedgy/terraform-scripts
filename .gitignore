@@ -3,3 +3,6 @@ secret.*
 credentials.*
 .aws
 .ssh
+*.tfstate
+*.tfstate.backup
+
