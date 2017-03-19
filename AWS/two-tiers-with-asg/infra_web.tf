@@ -182,40 +182,24 @@ resource "aws_autoscaling_group" "web-asg" {
   launch_configuration = "${aws_launch_configuration.web-lc.name}"
   load_balancers       = ["${aws_elb.web-elb.name}"]
 
-  /*
-  initial_lifecycle_hook {
-    name                 = "${var.domain_name}-${var.env}-Launching"
-    default_result       = "CONTINUE"
-    heartbeat_timeout    = 2000
-    lifecycle_transition = "autoscaling:EC2_INSTANCE_LAUNCHING"
-
-    notification_metadata = <<EOF
-{
-  "Message": "${var.domain_name}-${var.env}-Launching"
-}
-EOF
-
-    notification_target_arn = "arn:aws:sqs:us-east-1:444455556666:queue1*"
-    role_arn                = "arn:aws:iam::123456789012:role/S3Access"
-  }
-  */
-
-  #vpc_zone_identifier = ["${split(",", var.availability_zones)}"]
   tag {
     key                 = "Name"
     value               = "${var.domain_name}-web-asg"
     propagate_at_launch = "true"
   }
+
   tag {
     key                 = "Env"
     value               = "${var.env}"
     propagate_at_launch = "true"
   }
+
   tag {
     key                 = "Author"
     value               = "${var.author}"
     propagate_at_launch = "true"
   }
+
   tag {
     key                 = "Generator"
     value               = "${var.generator}"
@@ -262,5 +246,6 @@ data "template_file" "web-userdata" {
 
   vars {
     aws_region = "${var.aws_region}"
+    s3_bucket  = "${var.s3_bucket}"
   }
 }

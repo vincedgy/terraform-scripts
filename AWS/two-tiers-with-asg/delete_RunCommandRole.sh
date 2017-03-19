@@ -1,3 +1,5 @@
+#!/bin/bash
+
 export ROLE_NAME=RunCommandRole
 
 echo "Remove all instance-profile which use role $ROLE_NAME..."
