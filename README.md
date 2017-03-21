@@ -18,6 +18,8 @@ Based on terraform tutorial : launch a two tiers WebServer based on nginx with a
 ## two-tiers-with-asg
 Iteration from previous one with ASG integration, VPC, multiple subnets etc...
 
+## pyscripts
+Python Scripts collection illustrating boto3 usage
 
 ## TODO
 get on going
