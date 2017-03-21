@@ -86,7 +86,6 @@ variable "asg_desired" {
   default     = "4"
 }
 
-
 variable "s3_bucket" {
   description = "S3 bucket storing assets"
   default     = "hsbcinnovation4-web-assets"
