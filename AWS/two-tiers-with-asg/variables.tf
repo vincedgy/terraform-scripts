@@ -32,8 +32,8 @@ variable "ami_user" {
   default = "ec2-user"
 }
 
-variable "access_key" {}
-variable "secret_key" {}
+#variable "access_key" {}
+#variable "secret_key" {}
 
 variable "public_key_path" {
   description = <<DESCRIPTION
