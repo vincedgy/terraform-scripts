@@ -4,6 +4,9 @@ aws ec2 describe-images --owners self amazon --query 'Images[*].{ImageId:ImageId
 
 aws ec2 describe-images --owners amazon --filter Name="description",Values="Amazon Linux AMI*" --query 'Images[].[ImageId,CreationDate,Public,Name,Description]' --output text | sort -r -k 2 | head -5
 
+# Event more precise : the last Linux x86_64 HVM type GP2 sorted by date desc (first line is the last AMI available)
+aws ec2 describe-images --owners amazon --filter Name="description",Values="Amazon Linux AMI 2017*x86_64 HVM GP2*" --query 'Images[].[ImageId,CreationDate,Public,Name,Description]' --output text | sort -r -k 2 | head -10
+
 # List EC2 instances
 aws ec2 describe-instances --query 'Reservations[*].Instances[*].[InstanceId,LaunchTime]' --output text | sort -n -k 2
 
