@@ -2,6 +2,9 @@ terraform {
   required_version = "> 0.7.0"
 }
 
+#variable "access_key" {}
+#variable "secret_key" {}
+
 variable "aws_region" {
   description = "AWS region to launch servers."
   default     = "eu-west-1"
@@ -32,8 +35,6 @@ variable "ami_user" {
   default = "ec2-user"
 }
 
-variable "access_key" {}
-variable "secret_key" {}
 
 variable "public_key_path" {
   description = <<DESCRIPTION
@@ -78,12 +79,12 @@ variable "asg_min" {
 
 variable "asg_max" {
   description = "Max numbers of servers in ASG"
-  default     = "6"
+  default     = "12"
 }
 
 variable "asg_desired" {
-  description = "Desired numbers of servers in ASG"
-  default     = "4"
+  description = "Desired numbers of srvers in ASG"
+  default     = "8"
 }
 
 variable "s3_bucket" {

@@ -1,2 +1,2 @@
 #!/bin/bash
-terraform graph | dot -Tpng > graph.png; open graph.png
+terraform graph | dot -Tjpg > graph.jpg; open graph.jpg
