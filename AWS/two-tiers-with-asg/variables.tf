@@ -35,9 +35,6 @@ variable "ami_user" {
   default = "ec2-user"
 }
 
-#variable "access_key" {}
-#variable "secret_key" {}
-
 variable "public_key_path" {
   description = <<DESCRIPTION
 Path to the SSH public key to be used for authentication.
@@ -81,12 +78,12 @@ variable "asg_min" {
 
 variable "asg_max" {
   description = "Max numbers of servers in ASG"
-  default     = "12"
+  default     = "6"
 }
 
 variable "asg_desired" {
   description = "Desired numbers of srvers in ASG"
-  default     = "8"
+  default     = "6"
 }
 
 variable "s3_bucket" {

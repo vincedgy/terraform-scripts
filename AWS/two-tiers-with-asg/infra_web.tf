@@ -228,7 +228,7 @@ resource "aws_launch_configuration" "web-lc" {
   security_groups = ["${aws_security_group.default.id}"]
 
   # Attache Profile for SSMRunCommand (see SSM_Role.tf)
-  iam_instance_profile = "${aws_iam_instance_profile.RunCommandRole_profile.id}"
+  # iam_instance_profile = "${aws_iam_instance_profile.RunCommandRole_profile.id}"
 
   # Userdata for EC2 based on the template created
   user_data = "${data.template_file.web-userdata.rendered}"
